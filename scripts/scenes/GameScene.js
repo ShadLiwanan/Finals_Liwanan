@@ -2,16 +2,14 @@ export default class GameScene extends Phaser.Scene {
 
     constructor() {
         super('GameScene');
-        
-        
     }
 
 init (){
     this.ball;
     this.player1;
     this.player2;
-    this.initialVelocityX = (Math.random() * 150) + 100;
-    this.initialVelocityY = (Math.random() * 150) + 100;
+    this.initialVelocityX = 350;
+    this.initialVelocityY = 350;
     this.GameStart = false;
     this.player1Victory;
     this.player2Victory;
@@ -21,7 +19,7 @@ init (){
 
 preload (){
     //Preloading assets
-    this.load.image('ball', './assets/images/ball.png');
+    this.load.image('ball-doge', './assets/images/doge-ball.png');
     this.load.image('paddle', './assets/images/paddle.png');
 }
 
@@ -31,7 +29,7 @@ create (){
     this.ball = this.physics.add.sprite(
         this.physics.world.bounds.width /2, 
         this.physics.world.bounds.height /2 , 
-        'ball');
+        'ball-doge');
     //Collision for ball
     this.ball.setCollideWorldBounds(true);
     this.ball.setBounce(1,1);
@@ -85,6 +83,23 @@ create (){
     
 }
 
+reset (){
+    this.velocityX=350;
+    this.velocitY=350;
+    this.ball.x=400;
+    this.ball.y=200;
+    this.player2 = this.physics.add.sprite(
+        this.ball.body.width / 2 + 1,  
+        this.physics.world.bounds.height / 2, 
+        'paddle')
+    this.player1 = this.physics.add.sprite(
+        this.physics.world.bounds.width - (this.ball.body.width / 2 + 1),   
+        this.physics.world.bounds.height / 2, 
+        'paddle');
+    this.ball.setVelocityX=(this.velocityX);
+    this.ball.setVelocityY=(this.velocityY);
+}
+
 update (){
     //Update function for ball bounce
     if (!this.GameStart) {
@@ -109,15 +124,6 @@ update (){
     this.player1.body.setVelocityY(0);
     this.player2.body.setVelocityY(0);
 
-    //Up key for Arrows
-    if (this.cursors.up.isDown){
-        this.player1.body.setVelocityY(-350)
-    }
-    //Down Key Arrows
-    if (this.cursors.down.isDown){
-        this.player1.body.setVelocityY(350)
-
-    }
      //Up key for W
      if (this.keys.w.isDown){
         this.player2.body.setVelocityY(-350)
@@ -126,6 +132,8 @@ update (){
     if (this.keys.s.isDown){
         this.player2.body.setVelocityY(350)
     }
+    //AI
+    this.player1.body.setVelocityY(this.ball.body.velocity.y + 50);
 }
 }
 
